@@ -39,6 +39,10 @@ public class TileEditor : Editor
 	
 	float sweepArea = 1f;
 	
+	bool showTools = false;
+	bool showSpriteSheetSettings = true;
+	bool showTileSettings = true;
+	
 	Tile tile{
 		get { return (Tile) target; }
 	}
@@ -73,37 +77,54 @@ public class TileEditor : Editor
 			tile.gameObject.transform.position = Vector3.zero;
 		//=================================================================
 		w = Screen.width;
-		GUILayout.Label("Material");
-		tile.mat = (Material)EditorGUILayout.ObjectField(tile.mat, typeof(Material), false, GUILayout.MaxWidth(w) );
-
-		GUILayout.Label("\nAtlas Data");
-
-		tile.data = (TextAsset)EditorGUILayout.ObjectField(tile.data, typeof(TextAsset), false, GUILayout.MaxWidth(w) );
-
-		if(GUILayout.Button("Load Data", GUILayout.MaxWidth(w)))
-			readAtlasData(tile.data);
-
-		iconSize = EditorGUILayout.IntSlider("Preview Image Size", iconSize, 16, 128, GUILayout.MaxWidth(w));
-
-		tile.gridSize = EditorGUILayout.IntSlider("Grid Size", tile.gridSize, 1, 128, GUILayout.MaxWidth(w));
-		tile.tileSize = EditorGUILayout.IntSlider("Tile Size", tile.tileSize, 1, 128, GUILayout.MaxWidth(w));
 		
-		generateCollider = EditorGUILayout.BeginToggleGroup("Generate Colliders", generateCollider);	
-			colliderBounds = EditorGUILayout.BoundsField("Bounds", colliderBounds, GUILayout.MaxWidth(w));
-		
-			if(colliderBounds.size == new Vector3(0f, 0f, 0f) || GUILayout.Button("Reset") && Event.current.type != EventType.Repaint)
-				resetBounds = true;
-		EditorGUILayout.EndToggleGroup();
-		
-		tag = EditorGUILayout.TagField("Tag", tag);
-		
-		layer = EditorGUILayout.IntPopup("Layer Depth", layer, new string[]{"-4", "-3", "-2", "-1", "0", "1", "2", "3", "4"}, new int[]{-4, -3, -2, -1, 0, 1, 2, 3, 4});
-		
-		if( GUILayout.Button("Clean Up Overlapping Tiles") )
-			RemoveOverlappingTiles();
+		showSpriteSheetSettings = EditorGUILayout.Foldout(showSpriteSheetSettings, "SpriteSheet Data");
+		if(showSpriteSheetSettings)
+		{
+			GUILayout.Label("Material");
+			tile.mat = (Material)EditorGUILayout.ObjectField(tile.mat, typeof(Material), false, GUILayout.MaxWidth(w) );
 	
-		sweepArea = EditorGUILayout.FloatField("Scan Area", sweepArea);
+			GUILayout.Label("\nAtlas Data");
 	
+			tile.data = (TextAsset)EditorGUILayout.ObjectField(tile.data, typeof(TextAsset), false, GUILayout.MaxWidth(w) );
+	
+			if(GUILayout.Button("Load Data", GUILayout.MaxWidth(w)))
+				readAtlasData(tile.data);
+		}
+		
+		
+		showTileSettings = EditorGUILayout.Foldout(showTileSettings, "Tile Settings");
+		if(showTileSettings)
+		{
+			iconSize = EditorGUILayout.IntSlider("Preview Image Size", iconSize, 16, 128, GUILayout.MaxWidth(w));
+	
+			tile.gridSize = EditorGUILayout.IntSlider("Grid Size", tile.gridSize, 1, 128, GUILayout.MaxWidth(w));
+			tile.tileSize = EditorGUILayout.IntSlider("Tile Size", tile.tileSize, 1, 128, GUILayout.MaxWidth(w));
+			
+			generateCollider = EditorGUILayout.BeginToggleGroup("Generate Colliders", generateCollider);	
+				colliderBounds = EditorGUILayout.BoundsField("Bounds", colliderBounds, GUILayout.MaxWidth(w));
+			
+				if(colliderBounds.size == new Vector3(0f, 0f, 0f) || GUILayout.Button("Reset") && Event.current.type != EventType.Repaint)
+					resetBounds = true;
+			EditorGUILayout.EndToggleGroup();
+
+			tag = EditorGUILayout.TagField("Tag", tag);
+
+			layer = EditorGUILayout.IntPopup("Layer Depth", layer, new string[]{"-4", "-3", "-2", "-1", "0", "1", "2", "3", "4"}, new int[]{-4, -3, -2, -1, 0, 1, 2, 3, 4});
+		}
+						
+		showTools = EditorGUILayout.Foldout(showTools,"Tools");
+		if(showTools)
+		{		
+			if( GUILayout.Button("Clean Up Overlapping Tiles") )
+				RemoveOverlappingTiles();
+			sweepArea = EditorGUILayout.FloatField("Scan Area", sweepArea);
+			GUILayout.Space(3);
+			
+			if(GUILayout.Button("Set Children Materials to Match TileMaster"))
+				setMaterialsOnChildren();
+		}
+		
 		GUILayout.BeginHorizontal();
 			GUILayout.Label("Mode");
 			GUILayout.Label( currentMode.ToString(), EditorStyles.boldLabel );
@@ -187,6 +208,15 @@ public class TileEditor : Editor
 		if(GUI.changed)
 		{
 			DestroyPreviewMesh();
+		}
+	}
+	
+	void setMaterialsOnChildren()
+	{
+		MeshRenderer[] kids_mats = (MeshRenderer[])tile.GetComponentsInChildren<MeshRenderer>();
+		for(int i = 0; i < kids_mats.Length; i++)
+		{
+			kids_mats[i].material = t_mat;
 		}
 	}
 
