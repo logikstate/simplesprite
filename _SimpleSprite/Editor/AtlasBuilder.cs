@@ -118,9 +118,11 @@ public class AtlasBuilder : EditorWindow
 				filtermode = (FilterMode)EditorGUILayout.EnumPopup("Filter Mode", filtermode, GUILayout.MaxWidth(300));
 				texturewrapmode = (TextureWrapMode)EditorGUILayout.EnumPopup("Texture Wrap", texturewrapmode, GUILayout.MaxWidth(300));
 				
-				GUILayout.Label("Build Directory");
-				buildTo = EditorGUILayout.TextField( new GUIContent("Assets /", "Relative to Assets"), buildTo, GUILayout.MaxWidth(300));
-				
+				if(GUILayout.Button("Set Build Directory", GUILayout.MaxWidth(300))) {
+					buildTo = EditorUtility.OpenFolderPanel("Directory to save Spritesheets to.", "/", "");
+				}		
+				GUILayout.Label(buildTo);
+
 				GUI.backgroundColor = Color.green;
 				if(GUILayout.Button("Build", GUILayout.MaxWidth(300),GUILayout.MinHeight(64) ))
 				{
