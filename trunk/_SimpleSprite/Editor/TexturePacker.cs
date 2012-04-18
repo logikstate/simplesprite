@@ -213,4 +213,5 @@ public class TexturePacker : EditorWindow
 //		EditorUtility.ClearProgressBar();
 //	}
 //	}
+
 }
