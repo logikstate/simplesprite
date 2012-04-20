@@ -1,0 +1,13 @@
+#summary Sprite Class Documentation
+= Introduction =
+
+This page contains a complete listing of the methods within the Sprite class.
+
+= Details =
+
+==Public Methods==
+
+===Play()===
+Overloads:
+Play();
+Play(String animationName);
