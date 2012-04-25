@@ -33,7 +33,7 @@ public class SpriteInterface : Editor
 			obj = (GameObject)ss.gameObject;				
 		
 		if(!((MeshFilter)obj.GetComponent<MeshFilter>()).sharedMesh)
-			ss.AssignVertices(ss.anchorOptions[ss.anchor], false);			
+			ss.SetPivot(ss.anchorOptions[ss.anchor], false);			
 		
 		ss.atlasData = (TextAsset)EditorGUILayout.ObjectField(ss.atlasData, typeof(TextAsset), true);
 		
@@ -122,7 +122,7 @@ public class SpriteInterface : Editor
 	void setAnchor()
 	{
 		t_anchor = ss.anchor;
-		ss.AssignVertices(ss.anchorOptions[ss.anchor], false);
+		ss.SetPivot(ss.anchorOptions[ss.anchor], false);
 		setFrame();
 	}	
 	
@@ -131,7 +131,7 @@ public class SpriteInterface : Editor
 		if(EditorUtility.DisplayDialog("Make Sprite Mesh Unique",
 "This creates a new mesh for the object.  Use this if you duplicate a sprite and still want it to have it's own UV properties.  Warning - If the object is already unique it will leak a mesh into the scene.  To get rid of the leak you will have to restart Unity.", "Create Mesh", "Cancel"))
 		{
-			ss.AssignVertices(ss.anchorOptions[ss.anchor], true);
+			ss.SetPivot(ss.anchorOptions[ss.anchor], true);
 			setFrame();					
 		}
 	}

@@ -1,0 +1,5 @@
+### Todo
+
+- Phase out use of interwoven hashtables and arrays in favor of SpriteSheet class objects
+- Remove dependencies on TextAssets for storing data
+- Create class for generation of spritesheets at runtime

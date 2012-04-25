@@ -8,9 +8,11 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshRenderer))]
 public class Sprite : MonoBehaviour
 {
-
+	// TODO- Clean this up.  Many of these vars should not 
+	// be exposed, and some are simply not needed.
+	
 	// Internal variables
-	public bool isPlayingInternal = false;		// Should the animation be playing?  Used in anim loop
+	bool isPlayingInternal = false;				// Should the animation be playing?  Used in anim loop
 	private float timer = 0f;					// Used for keeping time during animation loop.
 	private string currentAnimation = "";		// What Animation is Currently Playing
 	public string currentlyPlaying
@@ -30,15 +32,18 @@ public class Sprite : MonoBehaviour
 	//	Left unitialized as it should either be initialized via Editor script or at runtime
 	//	based on the current material assigned.
 	//========================================================================================
+	// TODO Remove these linked arrays in favor of one unified SpriteSheet object
 	public string[] animation_names;			// Names of all animations
 	public Vector2[] animation_frames;			// Animation frame locations w/in offset/scale coords
 	public float[] animation_fps;				// Default FPS
+	// TODO Use Unity's Wrap enum
 	public int[] animation_wrap;				// Wrap mode
 												// 0 - Once
 												// 1 - Loop
 												// 2 - Ping Pong
 												// 3 - Static
-												
+	
+	// TODO this should be an enumerator
 	public bool[] animation_playOnWake;			// Play on wake
 	public Vector2[] animation_offset;			// Animation material offset
 	public Vector2[] animation_scale;			// Aniamtion material scale
@@ -59,6 +64,7 @@ public class Sprite : MonoBehaviour
 	public bool pixelperfect = true;
 	public bool hideOnInactive = false;
 	public int anchor = 0;
+	// TODO use SS.Pivot for this instead of string[]
 	public string[] anchorOptions = new string[]{"Center-Middle", "Bottom-Left", "Bottom-Middle", "Bottom-Right", "Center-Left", "Center-Right", "Top-Left", "Top-Middle", "Top-Right"};
 	public enum squash
 	{
@@ -70,7 +76,7 @@ public class Sprite : MonoBehaviour
 												// with the mesh scaling.	
 
 
-	// The reason this is hard set instead of grabbing it at runtime is because the UVs are adjusted 
+	// The reason this is hard-set instead of grabbing it at runtime is because the UVs are adjusted 
 	// in Editor mode.  For the time being this means that only SimpleSprite generated meshes will work
 	// unless you specifically modify originalUV to match that of your mesh. To do this, simply find the uv
 	// coords for your mesh (I just run a quick for loop around Debug.Log(mesh.uv[]) to get them.  Alternatively,
@@ -82,7 +88,7 @@ public class Sprite : MonoBehaviour
 	void Start()
 	{
 		if(createMeshAtRuntime)
-			AssignVertices(anchorOptions[anchor], false);
+			SetPivot(anchorOptions[anchor], false);
 		
 		// Calling Mesh so as not to interfere with any other sprites that may sharedMesh
 		// the same mesh.  You could change this to sharedMesh, but only do so if you either
@@ -90,7 +96,7 @@ public class Sprite : MonoBehaviour
 		// same mesh for any other sprites anyhow (If you use Create Sprite this isn't an issue).	
 		m = ((MeshFilter)GetComponent<MeshFilter>()).mesh as Mesh;		
 		if(m.vertices == null)
-			AssignVertices(anchorOptions[anchor], false);
+			SetPivot(anchorOptions[anchor], false);
 			
 		// Set Mesh and base mesh scale - used in Pixel Perfect Mesh scaling	
 		baseScale = new Vector2[animation_frames.Length];
@@ -191,7 +197,7 @@ public class Sprite : MonoBehaviour
 	public void SetAnchor(string newAnchor)
 	{
 		// newAnchor should correspond to a string in anchorOptions
-		AssignVertices(newAnchor, false);	
+		SetPivot(newAnchor, false);	
 	}
 	
 	//========================================================================================
@@ -303,8 +309,8 @@ public class Sprite : MonoBehaviour
 		}
 	}
 	
-	// Reassign Vertices to adjust Pivot point - Don't call at runtime!  Or do, I don't care.
-	public void AssignVertices(string windingOrder, bool createNew)
+	// Reassign Vertices to adjust Pivot point
+	public void SetPivot(string pivot, bool createNew)
 	{			
 		if( ((MeshFilter)GetComponent<MeshFilter>()).sharedMesh && !createNew)
 		{
@@ -321,7 +327,7 @@ public class Sprite : MonoBehaviour
 		Vector3 p2 = new Vector3();
 		Vector3 p3 = new Vector3();
 		
-		switch(windingOrder)
+		switch(pivot)
 		{
 			case "Center-Middle":
 				p0 = new Vector3(-5, -5, 0);
