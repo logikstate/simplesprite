@@ -120,8 +120,10 @@ public class AtlasBuilder : EditorWindow
 				
 				if(GUILayout.Button("Set Build Directory", GUILayout.MaxWidth(300))) {
 					buildTo = EditorUtility.OpenFolderPanel("Directory to save Spritesheets to.", "/", "");
-				}		
-				GUILayout.Label(buildTo);
+				}
+			
+				GUILayout.Label("Build Spritesheets to");
+				buildTo = EditorGUILayout.TextField("Assets/", buildTo, GUILayout.MaxWidth(300));
 
 				GUI.backgroundColor = Color.green;
 				if(GUILayout.Button("Build", GUILayout.MaxWidth(300),GUILayout.MinHeight(64) ))
