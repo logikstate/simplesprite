@@ -33,6 +33,7 @@ public class Sprite : MonoBehaviour
 	//	based on the current material assigned.
 	//========================================================================================
 	// TODO Remove these linked arrays in favor of one unified SpriteSheet object
+	SpriteSheet sheetInfo;
 	public string[] animation_names;			// Names of all animations
 	public Vector2[] animation_frames;			// Animation frame locations w/in offset/scale coords
 	public float[] animation_fps;				// Default FPS
