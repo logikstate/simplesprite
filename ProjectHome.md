@@ -1,0 +1,1 @@
+SimpleSprite is a free sprite manager / tile mapping extension for Unity3D.
